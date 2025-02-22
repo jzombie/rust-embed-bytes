@@ -1,6 +1,7 @@
 [workspace]
 members = [
     ".",
+    "embed-bytes-test-app",
     "embed-resources"
 ]
 resolver = "2"
