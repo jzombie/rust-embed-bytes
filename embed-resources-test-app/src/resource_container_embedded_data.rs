@@ -4,28 +4,8 @@
 pub struct ResourceContainerEmbeddedData;
 
 impl ResourceContainerEmbeddedData {
-    #[cfg(feature = "embed-bytes")]
-    pub const LOCAL_FILE: &'static [u8] =
-        include_bytes!(concat!(env!("OUT_DIR"), "/embed/LOCAL_FILE.bin"));
 
-    #[cfg(not(feature = "embed-bytes"))]
-    #[deprecated(note = "Feature flag not set, using empty array")]
-    pub const LOCAL_FILE: &'static [u8] = &[];
-
-    #[cfg(feature = "embed-bytes")]
-    pub const REMOTE_FILE: &'static [u8] =
-        include_bytes!(concat!(env!("OUT_DIR"), "/embed/REMOTE_FILE.bin"));
-
-    #[cfg(not(feature = "embed-bytes"))]
-    #[deprecated(note = "Feature flag not set, using empty array")]
-    pub const REMOTE_FILE: &'static [u8] = &[];
-
-    #[cfg(feature = "embed-bytes")]
-    pub const ARBITRARY_DATA: &'static [u8] =
-        include_bytes!(concat!(env!("OUT_DIR"), "/embed/ARBITRARY_DATA.bin"));
-
-    #[cfg(not(feature = "embed-bytes"))]
-    #[deprecated(note = "Feature flag not set, using empty array")]
-    pub const ARBITRARY_DATA: &'static [u8] = &[];
-
+    pub const LOCAL_FILE: &'static [u8] = include_bytes!("../embedded_data/LOCAL_FILE.bin");
+    pub const REMOTE_FILE: &'static [u8] = include_bytes!("../embedded_data/REMOTE_FILE.bin");
+    pub const ARBITRARY_DATA: &'static [u8] = include_bytes!("../embedded_data/ARBITRARY_DATA.bin");
 }

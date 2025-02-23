@@ -2,10 +2,11 @@ use std::path::Path;
 use embed_resources::{Resource, ResourceContainer};
 
 fn main() {
+    let storage_dir = Path::new("embedded_data");
     let struct_output_path = Path::new("src/resource_container_embedded_data.rs"); // Struct file path
     let struct_name = "ResourceContainerEmbeddedData";
 
-    let mut container = ResourceContainer::new(struct_output_path, struct_name);
+    let mut container = ResourceContainer::new(storage_dir, struct_output_path, struct_name);
 
     // Add resources from different sources
     container.add_resource("LOCAL_FILE", Resource::File("Cargo.toml".to_string()), true);

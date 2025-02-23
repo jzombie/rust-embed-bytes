@@ -3,16 +3,18 @@ use std::io;
 use std::path::Path;
 
 pub struct ResourceContainer<'a> {
-    output_path: &'a Path,
+    storage_dir: &'a Path,
+    struct_output_path: &'a Path,
     struct_name: String,
     resources: Vec<(String, Resource, bool)>, // (Name, Resource, Compress)
 }
 
 impl<'a> ResourceContainer<'a> {
     /// Creates a new empty container.
-    pub fn new(output_path: &'a Path, struct_name: &str) -> Self {
+    pub fn new(storage_dir: &'a Path, struct_output_path: &'a Path, struct_name: &str) -> Self {
         Self {
-            output_path,
+            storage_dir,
+            struct_output_path,
             struct_name: struct_name.to_string(),
             resources: Vec::new(),
         }
@@ -33,6 +35,6 @@ impl<'a> ResourceContainer<'a> {
         }
 
         // Use `embed-bytes` to write the byte arrays
-        embed_bytes::write_byte_arrays(self.output_path, self.struct_name.as_str(), byte_arrays)
+        embed_bytes::write_byte_arrays(self.storage_dir, self.struct_output_path, self.struct_name.as_str(), byte_arrays)
     }
 }
