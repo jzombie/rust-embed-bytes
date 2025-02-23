@@ -1,13 +1,13 @@
 [package]
 name = "embed-resources"
-version = "0.1.0-alpha5"
+version = "0.1.0-alpha6"
 edition = "2021"
 repository = "https://github.com/jzombie/rust-embed-bytes"
 description = "A simple Rust crate to embed resources (files, URLs, data) as byte arrays."
 license = "MIT"
 
 [dependencies]
-embed-bytes = { version = "=0.1.0-alpha5", path = "../embed-bytes" }
+embed-bytes = { version = "=0.1.0-alpha6", path = "../embed-bytes" }
 flate2 = "1.0.35"
 reqwest =  { version = "0.12.12", features = ["blocking"] }
 bytes = "1.9.0"
