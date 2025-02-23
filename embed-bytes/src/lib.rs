@@ -1,53 +1,20 @@
-// TODO: Rename `embed-bytes` feature to `out-dir-bridge`?
-
 use bytes::Bytes;
-use std::env;
 use std::fs::{self, File};
 use std::io::{self, BufWriter, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-/// Writes binary files to `OUT_DIR/embed/` and generates a Rust struct in `src/`.
-///
-/// * Binary files are written to `OUT_DIR/embed/`.
-/// * The generated `.rs` file is placed at `src/<struct_name>.rs`.
-///
-/// If the `embed-bytes` feature is enabled, the struct contains constants
-/// referencing the binary files using `include_bytes!`. Otherwise, they are
-/// empty arrays with a deprecation warning.
-///
-/// # Arguments
-///
-/// * `struct_output_path` - The path to `src/<struct_name>.rs`.
-/// * `struct_name` - The name of the generated struct.
-/// * `byte_arrays` - A vector of tuples `(field_name, content)`,
-///   where `field_name` is the associated constant and `content` is the binary.
-///
-/// # Errors
-/// Returns an `io::Error` if any file operation fails.
 pub fn write_byte_arrays(
+    storage_dir: &Path,
     struct_output_path: &Path,
     struct_name: &str,
-    // TODO: Enforce UPPER_SNAKE_CASE: Constant `local_file` should have UPPER_SNAKE_CASE name, e.g. `LOCAL_FILE`rust-analyzernon_upper_case_globals
     byte_arrays: Vec<(&str, Bytes)>,
 ) -> io::Result<()> {
-    // Get OUT_DIR and resolve the binary output directory.
-    let out_dir = env::var("OUT_DIR")
-        .map_err(|_| io::Error::new(io::ErrorKind::NotFound, "OUT_DIR not set"))?;
-    let bin_output_path = Path::new(&out_dir).join("embed");
+    // Ensure the storage directory exists.
+    fs::create_dir_all(storage_dir)?;
 
-    // Ensure binary output directory exists.
-    fs::create_dir_all(&bin_output_path)?;
-
-    // Ensure `src/` exists.
-    let src_dir = Path::new("src");
-    fs::create_dir_all(src_dir)?;
-
-    // Ensure the struct output file path is within `src/`
-    if !struct_output_path.starts_with("src/") {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            "Struct output path must be inside `src/`.",
-        ));
+    // Ensure the directory of the struct output path exists.
+    if let Some(parent_dir) = struct_output_path.parent() {
+        fs::create_dir_all(parent_dir)?;
     }
 
     // Open the Rust file for writing.
@@ -64,36 +31,37 @@ pub fn write_byte_arrays(
     // Write the struct definition.
     writeln!(rs_writer, "pub struct {};", struct_name)?;
     writeln!(rs_writer)?;
+
+    // Write the impl block where constants are defined.
     writeln!(rs_writer, "impl {} {{", struct_name)?;
+    writeln!(rs_writer)?;
 
     // Process each byte array.
     for (field, content) in &byte_arrays {
         let bin_filename = format!("{}.bin", field);
-        let bin_path = bin_output_path.join(&bin_filename);
+        let bin_path = storage_dir.join(&bin_filename);
 
-        // Write the binary file.
+        // Write the binary file to the storage directory.
         let mut bin_file = File::create(&bin_path)?;
         bin_file.write_all(content)?;
 
-        // Write the associated constant with conditional compilation.
-        writeln!(rs_writer, "    #[cfg(feature = \"embed-bytes\")]")?;
-        writeln!(rs_writer, "    pub const {}: &'static [u8] =", field)?;
-        writeln!(
-            rs_writer,
-            "        include_bytes!(concat!(env!(\"OUT_DIR\"), \"/embed/{}\"));",
-            bin_filename
-        )?;
-        writeln!(rs_writer)?;
+        // Calculate the relative path from struct output directory to binary file
+        let relative_path = pathdiff::diff_paths(&bin_path, struct_output_path.parent().unwrap())
+            .unwrap_or_else(|| bin_path.clone());
 
-        writeln!(rs_writer, "    #[cfg(not(feature = \"embed-bytes\"))]")?;
+        // Convert the relative path to a string for include_bytes!
+        let relative_str = relative_path.to_str().unwrap();
+
+        // Write the associated constant with the correct relative path
         writeln!(
             rs_writer,
-            "    #[deprecated(note = \"Feature flag not set, using empty array\")]"
+            "    pub const {}: &'static [u8] = include_bytes!(\"{}\");",
+            field,
+            relative_str
         )?;
-        writeln!(rs_writer, "    pub const {}: &'static [u8] = &[];", field)?;
-        writeln!(rs_writer)?;
     }
 
+    // Write the closing brace for the impl block.
     writeln!(rs_writer, "}}")?;
 
     Ok(())

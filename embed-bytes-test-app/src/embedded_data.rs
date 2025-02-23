@@ -4,20 +4,7 @@
 pub struct EmbeddedData;
 
 impl EmbeddedData {
-    #[cfg(feature = "embed-bytes")]
-    pub const ARRAY_ONE: &'static [u8] =
-        include_bytes!(concat!(env!("OUT_DIR"), "/embed/ARRAY_ONE.bin"));
 
-    #[cfg(not(feature = "embed-bytes"))]
-    #[deprecated(note = "Feature flag not set, using empty array")]
-    pub const ARRAY_ONE: &'static [u8] = &[];
-
-    #[cfg(feature = "embed-bytes")]
-    pub const ARRAY_TWO: &'static [u8] =
-        include_bytes!(concat!(env!("OUT_DIR"), "/embed/ARRAY_TWO.bin"));
-
-    #[cfg(not(feature = "embed-bytes"))]
-    #[deprecated(note = "Feature flag not set, using empty array")]
-    pub const ARRAY_TWO: &'static [u8] = &[];
-
+    pub const ARRAY_ONE: &'static [u8] = include_bytes!("../embedded_data/ARRAY_ONE.bin");
+    pub const ARRAY_TWO: &'static [u8] = include_bytes!("../embedded_data/ARRAY_TWO.bin");
 }
