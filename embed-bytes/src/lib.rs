@@ -2,7 +2,7 @@ use bytes::Bytes;
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, BufWriter, Write};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 /// Writes binary files to `OUT_DIR/embed/` and generates a Rust struct in `src/`.
 ///
@@ -25,6 +25,7 @@ use std::path::{Path, PathBuf};
 pub fn write_byte_arrays(
     struct_output_path: &Path,
     struct_name: &str,
+    // TODO: Enforce UPPER_SNAKE_CASE: Constant `local_file` should have UPPER_SNAKE_CASE name, e.g. `LOCAL_FILE`rust-analyzernon_upper_case_globals
     byte_arrays: Vec<(&str, Bytes)>,
 ) -> io::Result<()> {
     // Get OUT_DIR and resolve the binary output directory.

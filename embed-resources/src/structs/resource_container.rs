@@ -10,10 +10,10 @@ pub struct ResourceContainer<'a> {
 
 impl<'a> ResourceContainer<'a> {
     /// Creates a new empty container.
-    pub fn new(output_path: &'a Path, struct_name: String) -> Self {
+    pub fn new(output_path: &'a Path, struct_name: &str) -> Self {
         Self {
             output_path,
-            struct_name,
+            struct_name: struct_name.to_string(),
             resources: Vec::new(),
         }
     }

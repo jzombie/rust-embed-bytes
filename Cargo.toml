@@ -2,6 +2,7 @@
 members = [
     ".",
     "embed-bytes-test-app",
-    "embed-resources"
+    "embed-resources",
+    "embed-resources-test-app"
 ]
 resolver = "2"

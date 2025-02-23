@@ -128,7 +128,7 @@ dependencies = [
 
 [[package]]
 name = "embed-bytes-test-app"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "bytes",
  "embed-bytes",
@@ -142,6 +142,14 @@ dependencies = [
  "embed-bytes",
  "flate2",
  "reqwest",
+]
+
+[[package]]
+name = "embed-resources-test-app"
+version = "0.0.0"
+dependencies = [
+ "bytes",
+ "embed-resources",
 ]
 
 [[package]]

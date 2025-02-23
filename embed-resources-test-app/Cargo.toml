@@ -1,13 +1,13 @@
 [package]
-name = "embed-bytes-test-app"
+name = "embed-resources-test-app"
 version = "0.0.0"
 edition = "2021"
 publish = false
 
-[build-dependencies]
-bytes = "1.10.0"
-embed-bytes = { path = "../embed-bytes" }
-
 [features]
 embed-bytes = []   # Feature flag for embedding binaries
 default = ["embed-bytes"]  # Enables `embed-bytes` by default
+
+[build-dependencies]
+bytes = "1.10.0"
+embed-resources = { path = "../embed-resources" }
