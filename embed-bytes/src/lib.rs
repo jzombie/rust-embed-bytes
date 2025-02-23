@@ -1,3 +1,5 @@
+// TODO: Rename `embed-bytes` feature to `out-dir-bridge`?
+
 use bytes::Bytes;
 use std::env;
 use std::fs::{self, File};
