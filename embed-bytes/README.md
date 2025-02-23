@@ -1,6 +1,6 @@
 # embed-bytes (Work in Progress)
 
-**This is a prototype; the documentation may not be correct, and the API is subject to change,**
+**This is a prototype; the documentation may not be correct, and the API is subject to change.**
 
 `embed-bytes` is a Rust crate that simplifies embedding low-level binary arrays and assets in other Rust programs. It relies only on the [bytes](https://crates.io/crates/bytes) crate for efficient handling of these assets.
 
